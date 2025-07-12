@@ -8,7 +8,7 @@ import UploadImage from "../SignUp/UploadImage";
 import { useDispatch } from "react-redux";
 import { login } from "../../../Redux/Redux";
 import { logout } from "../../../Redux/Redux";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 function Profile() {
