@@ -21,6 +21,7 @@ console.log('---------------------------------------------------')
     if (!decode) {
       console.log('Unauthorized access denied!!');
       res.status(401).json({ message: 'Unauthorized access denied!!' });
+      
       return;
     }
 

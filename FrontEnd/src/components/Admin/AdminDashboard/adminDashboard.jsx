@@ -7,11 +7,22 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 function AdminDashboard() {
+
   const [users, setUsers] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingUserId, setEditingUserId] = useState(null);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [addUserData, setAddUserData] = useState({
+const [currentPage, setCurrentPage] = useState(1);
+const usersPerPage = 5;
+
+const indexOfLastUser = currentPage * usersPerPage;
+const indexOfFirstUser = indexOfLastUser - usersPerPage;
+const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+
+const totalPages = Math.ceil(users.length / usersPerPage);
+
+
+const [isModalOpen, setIsModalOpen] = useState(false);
+const [editingUserId, setEditingUserId] = useState(null);
+const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+const [addUserData, setAddUserData] = useState({
     name: "",
     email: "",
     contactNumber: "",
@@ -162,6 +173,7 @@ console.log('addUserData',addUserData)
   };
 
   return (
+
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
       <button
@@ -251,7 +263,7 @@ console.log('addUserData',addUserData)
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {currentUsers.map((user) => (
             <tr key={user._id}>
               <td className="h-7 w-7">
                 <img src={user.image} alt="" />
@@ -328,6 +340,37 @@ console.log('addUserData',addUserData)
           ))}
         </tbody>
       </table>
+    
+    <div className="flex justify-center mt-4 space-x-2">
+  <button
+    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+    disabled={currentPage === 1}
+    className="px-3 py-1 border rounded bg-gray-200"
+  >
+    Prev
+  </button>
+
+  {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+    <button
+      key={page}
+      onClick={() => setCurrentPage(page)}
+      className={`px-3 py-1 border rounded ${
+        currentPage === page ? "bg-blue-500 text-white" : "bg-white"
+      }`}
+    >
+      {page}
+    </button>
+  ))}
+
+  <button
+    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+    disabled={currentPage === totalPages}
+    className="px-3 py-1 border rounded bg-gray-200"
+  >
+    Next
+  </button>
+</div>
+
 
       {/* Modal for Editing */}
     </div>
