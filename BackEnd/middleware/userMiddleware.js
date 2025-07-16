@@ -1,9 +1,11 @@
 const jwt = require('jsonwebtoken');
 
 const userMiddleware = async (req, res, next) => {
+  console.log('it is userMiddleware')
   try {
-    const token = req.headers.authorization;
-
+    const token =  req.headers.authorization
+console.log('token',token)
+console.log('---------------------------------------------------')
     if (!token) {
       console.log("Authorization is not found!!");
       res.status(401).json({ message: 'Authorization is not found!!' });

@@ -99,7 +99,7 @@ const editData = async (req, res) => {
     const {
       name,
       email,
-      phone,
+      contactNumber,
       location,
       image,
       password,
@@ -111,7 +111,7 @@ const editData = async (req, res) => {
       "name,email,phone,location,image",
       name,
       email,
-      phone,
+      contactNumber,
       location,
       image,
       prvEmail
@@ -128,7 +128,7 @@ const editData = async (req, res) => {
         { _id: id }, // Find the user by email
         {
           name: name,
-          contactNumber: phone,
+          contactNumber: contactNumber,
           location: location,
           password: password,
           confirmPassword: confirmPassword,

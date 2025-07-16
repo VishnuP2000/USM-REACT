@@ -13,8 +13,7 @@ const UploadImage = async (image) => {
 
   try {
     const res = await axios.post(
-      "https://api.cloudinary.com/v1_1/ddhz5buou/image/upload",data
-    );
+      "https://api.cloudinary.com/v1_1/ddhz5buou/image/upload",data);
     console.log("Uploaded Image URL:", res.data.secure_url);
     return res.data.secure_url;
   } catch (error) {

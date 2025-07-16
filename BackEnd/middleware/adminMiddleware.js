@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const adminMiddleware = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
+    console.log('it is adminMidlewre')
 
     if (!token) {
       console.log("Authorization is not found!!");

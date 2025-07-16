@@ -54,10 +54,11 @@ function Login() {
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/signIn",
-        signInData
-      );
+      const response = await axios.post( "http://localhost:4000/signIn", signInData,{
+        headers:{
+          Authorization:localStorage.getItem('jwtUser')
+        }
+      });
 
       if (response.data.message == "success") {
         toast.success("email is success");
