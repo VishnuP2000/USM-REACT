@@ -12,11 +12,12 @@ console.log('---------------------------------------------------')
       return;
     }
 
-    if (!process.env.JSON_WEB_TOKEN) {
+    if (!process.env.ACCESS_TOKEN_SECRET) {
       throw new Error("ACCESS_TOKEN_SECRET is not defined in the environment variables.");
     }
-
-    const decode = jwt.verify(token, process.env.JSON_WEB_TOKEN);
+    console.log('it is userMiddleware in tokenssss')
+    const tokens = token.split(" ")[1]; 
+    const decode = jwt.verify(tokens, process.env.ACCESS_TOKEN_SECRET);
 
     if (!decode) {
       console.log('Unauthorized access denied!!');
@@ -30,7 +31,7 @@ console.log('---------------------------------------------------')
 
     next();
   } catch (error) {
-    console.log(error);
+    console.log('userMiddleware catch side',error);
     res.status(401).json({ message: 'Internal server error!!' });
     return;
   }

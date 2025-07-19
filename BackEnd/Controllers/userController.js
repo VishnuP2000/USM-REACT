@@ -42,14 +42,28 @@ const signUp = async (req, res) => {
       const savedUser = await newUser.save();
       console.log("it is savedUser", savedUser);
 
-      const token = jwt.sign(
-        { userId: savedUser._id, role: "user" },
-        process.env.JSON_WEB_TOKEN,
-        { expiresIn: "1h" }
-      );
+              const accessToken = jwt.sign(
+  { userId: savedUser._id ,role:"user" },
+  process.env.ACCESS_TOKEN_SECRET,
+  { expiresIn: "15m" }
+);
+
+const refreshToken = jwt.sign(
+  { userId: userData._id,role:"user" },
+  process.env.REFRESH_TOKEN_SECRET,
+  { expiresIn: "7d" }
+);
+
+  res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true, // use in production
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+    
       res
         .status(201)
-        .json({ message: "success", token: token, user: savedUser });
+        .json({ message: "success", token: accessToken, user: savedUser });
     }
   } catch (error) {
     console.log("it is controller error", error);
@@ -69,14 +83,34 @@ const signIn = async (req, res) => {
       console.log("it is matching");
       if (userData.password == password) {
         console.log("password is matching");
-        const token = jwt.sign(
-          { userId: userData._id, role: "user" },
-          process.env.JSON_WEB_TOKEN,
-          { expiresIn: "1h" }
-        );
+        // const token = jwt.sign(
+        //   { userId: userData._id, role: "user" },
+        //   process.env.JSON_WEB_TOKEN,
+        //   { expiresIn: "1h" }
+        // );
+
+        const accessToken = jwt.sign(
+  { userId: userData._id ,role:"user" },
+  process.env.ACCESS_TOKEN_SECRET,
+  { expiresIn: "15m" }
+);
+
+const refreshToken = jwt.sign(
+  { userId: userData._id,role:"user" },
+  process.env.REFRESH_TOKEN_SECRET,
+  { expiresIn: "7d" }
+);
+
+  res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true, // use in production
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
         res
           .status(201)
-          .json({ message: "success", token: token, user: userData });
+          .json({ message: "success", accessToken, userData });
       } else {
         console.log("password is not match");
 
@@ -138,22 +172,62 @@ const editData = async (req, res) => {
         { new: true } // Return the updated document
       );
       console.log("updatedUser", updatedUser);
-      const token = jwt.sign(
-        { userId: updatedUser._id, role: "user" },
-        process.env.JSON_WEB_TOKEN,
-        { expiresIn: "1h" }
-      );
+            const accessToken = jwt.sign(
+  { userId: updatedUser._id ,role:"user" },
+  process.env.ACCESS_TOKEN_SECRET,
+  { expiresIn: "15m" }
+);
+
+const refreshToken = jwt.sign(
+  { userId: updatedUser._id,role:"user" },
+  process.env.REFRESH_TOKEN_SECRET,
+  { expiresIn: "7d" }
+);
+
+  res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true, // use in production
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
       res
         .status(201)
-        .json({ message: "success", token: token, user: updatedUser });
+        .json({ message: "success", accessToken,updatedUser });
     }
   } catch (error) {
     console.log("it is editData error", error);
   }
 };
 
+
+
+
+const refreshToken = (req, res) => {
+  console.log('it is refreshToken in userController')
+  // ✅ FIX:
+const token = req.cookies.refreshToken;
+console.log('it is refreshToken on cookies',token)
+
+  if (!token) return res.status(401).json({ message: "Refresh token required" });
+
+  try {
+    const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    console.log('it is decoded of refreshtoken in backend')
+    const accessToken = jwt.sign(
+      { userId: decoded.userId },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
+    res.json({ accessToken });
+  } catch (error) {
+    res.status(403).json({ message: "Invalid refresh token" });
+  }
+};
+
+
 module.exports = {
   signUp,
   signIn,
   editData,
+  refreshToken
 };

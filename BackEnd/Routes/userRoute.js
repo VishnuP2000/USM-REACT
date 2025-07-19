@@ -10,5 +10,7 @@ userRoute.post('/signUp',userController.signUp)
 userRoute.post('/signIn',userController.signIn)
 userRoute.post('/editData',userMiddleware,userController.editData)
 
+userRoute.post('/refresh', userController.refreshToken);
+
 
 module.exports=userRoute

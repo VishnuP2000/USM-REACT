@@ -117,7 +117,8 @@ try {
     console.log('response',response)
 
  if (response.data.message == 'success') {
-  localStorage.setItem('user', JSON.stringify({//it is convert json string in to obect
+  console.log('it is response.data.message of signup page')
+  localStorage.setItem('accessToken', JSON.stringify({//it is convert json string in to obect
     token: response.data.token,
     user: response.data.user
   }));

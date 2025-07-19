@@ -6,7 +6,7 @@ const UserVeriAuth = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("user");
+    const token = localStorage.getItem("accessToken");
     console.log('token ',token)
     let data = null;
 

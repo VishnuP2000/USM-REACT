@@ -3,6 +3,7 @@ const express =require ('express');
 const mongoose=require('mongoose')
 const userRoute=require('./Routes/userRoute')
 const adminRoute=require('./Routes/adminRoute')
+const cookieParser=require('cookie-parser')
 const Cors=require('cors')
 
 
@@ -10,8 +11,12 @@ console.log('it is server.js page')
 
 const app=express()
 
-app.use(Cors())
+app.use(Cors({
+  origin: "http://localhost:5173", // Your frontend domain
+  credentials: true // ✅ Important to allow cookies
+}));
 
+app.use(cookieParser());
 app.use(express.json())
 
 app.get('/',(req,res)=>{

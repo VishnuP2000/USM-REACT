@@ -53,28 +53,31 @@ function Login() {
       password: formData.password,
     };
 
+    console.log('pasing data of login')
     try {
       const response = await axios.post( "http://localhost:4000/signIn", signInData,{
-        headers:{
-          Authorization:localStorage.getItem('jwtUser')
-        }
       });
-
+      console.log('it is response of login')
       if (response.data.message == "success") {
         toast.success("email is success");
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            //it is convert json string in to obect
-            token: response.data.token,
-            user: response.data.user,
-          })
-        );
-
-        // dispatch(login({token:response.data.token,user:response.data.user}))
-        dispatch(
-          login({ token: response.data.token, user: response.data.user })
-        );
+        console.log('it is response',response.data.message)
+     
+        //    localStorage.setItem(
+        //   "accessToken",
+        //   JSON.stringify({
+        //     //it is convert json string in to obect
+        //     token: response.data.accessToken,
+        //     user: response.data.userData,
+        //   })
+        // );
+        localStorage.setItem("accessToken",response.data.accessToken);
+        console.log("response.data.accessToken",response.data.accessToken)
+console.log('store the datas into the local storage from login')
+// dispatch(login({token:response.data.token,user:response.data.user}))
+dispatch(
+  login({ token: response.data.accessToken, user: response.data.userData })
+);
+console.log('pass datas into the redux from login')
 
         setTimeout(() => navigate("/Profile"), 2000);
       } else if (response.data.message == "failure") {
