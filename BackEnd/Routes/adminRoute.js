@@ -10,6 +10,9 @@ adminRoute.get('/getUsers',adminMiddleware,adminController.getUsers)
 adminRoute.put('/editUsers',adminMiddleware,adminController.editUsers)
 adminRoute.delete('/deleteUser/:id', adminMiddleware,adminController.deleteUser);
 adminRoute.post('/AddUser', adminMiddleware,adminController.AddUser);
+adminRoute.get('/searchUsers',adminController.searchUsers);
+
+adminRoute.post('/refresh',adminController.adminRefreshToken);
 
 
 

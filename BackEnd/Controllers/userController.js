@@ -1,5 +1,6 @@
 const Users = require("../Models/userModel");
 const jwt = require("jsonwebtoken");
+const bcrypt=require("bcrypt")
 const signUp = async (req, res) => {
   try {
     console.log("it is signUp in userController");
@@ -24,18 +25,24 @@ const signUp = async (req, res) => {
       image
     );
 
+     const hashedPassword = await bcrypt.hash(password, 10);
+
+     console.log('hasedPassword',hashedPassword)
+
+
+
     const validData = await Users.find({ email: email });
     console.log("validData", validData);
-    if (validData > 0) {
+    if (validData.length > 0) {
       console.log("it is already exist");
-      res.json({ message: "these data are already exist" });
+      res.json({ message: "exist" });
     } else {
       const newUser = new Users({
         name: name,
         email: email,
         contactNumber: contactNumber,
         location: location,
-        password: password,
+        password: hashedPassword,
         confirmPassword: confirmPassword,
         image: image,
       });
@@ -49,7 +56,7 @@ const signUp = async (req, res) => {
 );
 
 const refreshToken = jwt.sign(
-  { userId: userData._id,role:"user" },
+  { userId: savedUser._id,role:"user" },
   process.env.REFRESH_TOKEN_SECRET,
   { expiresIn: "7d" }
 );
@@ -83,11 +90,7 @@ const signIn = async (req, res) => {
       console.log("it is matching");
       if (userData.password == password) {
         console.log("password is matching");
-        // const token = jwt.sign(
-        //   { userId: userData._id, role: "user" },
-        //   process.env.JSON_WEB_TOKEN,
-        //   { expiresIn: "1h" }
-        // );
+   
 
         const accessToken = jwt.sign(
   { userId: userData._id ,role:"user" },
@@ -150,7 +153,7 @@ const editData = async (req, res) => {
       image,
       prvEmail
     );
-
+const hashedPassword = await bcrypt.hash(password, 10);
     console.log("prvEmail", prvEmail);
     const userData = await Users.findOne({ email: prvEmail });
     console.log("userDAtaaaaaaaaa", userData);
@@ -164,7 +167,7 @@ const editData = async (req, res) => {
           name: name,
           contactNumber: contactNumber,
           location: location,
-          password: password,
+          password: hashedPassword,
           confirmPassword: confirmPassword,
           image: image,
           email: email,
@@ -204,7 +207,7 @@ const refreshToken = jwt.sign(
 
 const refreshToken = (req, res) => {
   console.log('it is refreshToken in userController')
-  // ✅ FIX:
+
 const token = req.cookies.refreshToken;
 console.log('it is refreshToken on cookies',token)
 
@@ -212,14 +215,17 @@ console.log('it is refreshToken on cookies',token)
 
   try {
     const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
-    console.log('it is decoded of refreshtoken in backend')
-    const accessToken = jwt.sign(
+    console.log('it is decoded of refreshtoken in frontEnd')
+    if(decoded){
+      const accessToken = jwt.sign(
       { userId: decoded.userId },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" }
     );
     res.json({ accessToken });
+    }
   } catch (error) {
+    console.log('it is refreshError',error)
     res.status(403).json({ message: "Invalid refresh token" });
   }
 };

@@ -1,12 +1,18 @@
 import "./AdminDashboard.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useMemo } from "react";
 import axios from "axios";
 import Modal from "./Modal"; // Make sure this is the correct path
 import UploadImage from "../../User/SignUp/UploadImage";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import adminApi from '../adminAxiosInstance'
+import debounce from 'lodash.debounce'
+
 
 function AdminDashboard() {
+
+      const [query, setQuery] = useState("");
+  const [searchUsers, setsearchUsers] = useState([]);
 
   const [users, setUsers] = useState([]);
 const [currentPage, setCurrentPage] = useState(1);
@@ -15,6 +21,7 @@ const usersPerPage = 5;
 const indexOfLastUser = currentPage * usersPerPage;
 const indexOfFirstUser = indexOfLastUser - usersPerPage;
 const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+const searchedUsers = searchUsers.slice(indexOfFirstUser, indexOfLastUser);
 
 const totalPages = Math.ceil(users.length / usersPerPage);
 
@@ -44,23 +51,15 @@ console.log('addUserData',addUserData)
   useEffect(() => {
     fetchUsers();
   }, []);
+  
   console.log("users", users);
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/admin/getUsers", {
-        headers: {
-          Authorization: localStorage.getItem("jwtUser"),
-        },
-      });
+      const res = await adminApi.get("/admin/getUsers");
       if (res.data.message === "succesfully") {
-        //   localStorage.setItem(
-        //   "admin",
-        //   JSON.stringify({
-        //     //it is convert json string in to obect
-        //     token: res.data.token,
-        //     user: res.data.user,
-        //   })
-        // );
+
+        console.log('res.data',res.data)
+        localStorage.setItem('jwtUser',res.data.token)
         setUsers(res.data.user);
       }
     } catch (error) {
@@ -71,12 +70,13 @@ console.log('addUserData',addUserData)
   const handleDelete = async (userId) => {
     try {
       console.log("it is handleDelete",userId);
-      await axios.delete(`http://localhost:4000/admin/deleteUser/${userId}`,{
-       headers: {
-          Authorization: localStorage.getItem("jwtUser"),
-        },
-      });
-      setUsers(users.filter((user) => user._id !== userId));
+      
+    const res=await adminApi.delete(`/admin/deleteUser/${userId}`);
+
+      if(res.data.message=="User deleted successfully"){
+        console.log('succefully delete data')
+        setUsers(users.filter((user) => user._id !== userId));
+      }
     } catch (error) {
       console.error("Delete failed", error);
     }
@@ -96,14 +96,16 @@ console.log('addUserData',addUserData)
 
   const handleSave = async () => {
     try {
-      await axios.put(
-        `http://localhost:4000/admin/editUsers?id=${editingUserId}`, editData,{
-         headers: {
-          Authorization: localStorage.getItem("jwtUser"),
-        },
+    const res= await adminApi.put(
+        `/admin/editUsers?id=${editingUserId}`, editData,{
+         
         });
-      setIsModalOpen(false);
-      fetchUsers();
+        if(res.data.message=='successfully'){
+
+          setIsModalOpen(false);
+          fetchUsers();
+                localStorage.setItem('jwtUser',res.data.token)
+        }
     } catch (error) {
       console.error("Error updating user", error);
     }
@@ -112,14 +114,13 @@ console.log('addUserData',addUserData)
   const handleAddSave=async()=>{
     try {
       console.log('it is handleAddSave')
-      const res=await axios.post('http://localhost:4000/admin/AddUser',addUserData,{
-         headers: {
-          Authorization: localStorage.getItem("jwtUser"),
-        },
+      const res=await adminApi.post('/admin/AddUser',addUserData,{
+      
       })
       if(res.data.message=='success'){
         toast.success('successfully add user')
         console.log('it is res',res.data)
+        localStorage.setItem('jwtUser',res.data.token)
         fetchUsers()
         setIsAddModalOpen(false)
       }else if(res.data.message=='exist'){
@@ -172,10 +173,58 @@ console.log('addUserData',addUserData)
     navigate("/admin");
   };
 
+
+
+  // Debounced search function
+  const debouncedSearch = useMemo(() =>
+    debounce(async (value) => {
+      console.log('it is enter the debounceDashsearch')
+      if (!value.trim()) return;
+      console.log('it is value',value)
+      try {
+        const res = await axios.get(`http://localhost:4000/admin/searchUsers?search=${value}`);
+      if(res.data.message=='success'){
+          console.log('res.data.user',res.data.user)
+          setsearchUsers(res.data.user);
+          console.log('searchUsers',searchUsers)
+      }
+      } catch (err) {
+        console.error("Error fetching users", err);
+      }
+    }, 500), []); // 500ms delay
+
+  const handleChange = (e) => {
+    console.log('it is handlechange on search')
+    console.log('e.target.value',e.target.value)
+    setQuery(e.target.value);
+    debouncedSearch(e.target.value);
+  };
+
+  
+
   return (
 
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
+
+
+
+
+
+
+      <div className="ml-96">    
+              <input
+        type="text"
+        placeholder="Search users..."
+        value={query}
+        onChange={handleChange}
+      />
+       
+
+
+
+
+      </div>
       <button
         onClick={AddUser}
         className="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
@@ -263,7 +312,7 @@ console.log('addUserData',addUserData)
           </tr>
         </thead>
         <tbody>
-          {currentUsers.map((user) => (
+           {(query.trim() ? searchedUsers : currentUsers).map((user) => (
             <tr key={user._id}>
               <td className="h-7 w-7">
                 <img src={user.image} alt="" />

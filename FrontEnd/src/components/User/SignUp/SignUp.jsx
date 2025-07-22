@@ -118,16 +118,16 @@ try {
 
  if (response.data.message == 'success') {
   console.log('it is response.data.message of signup page')
-  localStorage.setItem('accessToken', JSON.stringify({//it is convert json string in to obect
-    token: response.data.token,
-    user: response.data.user
-  }));
+  localStorage.setItem("accessToken",response.data.token);
   
   dispatch(login({ token: response.data.token, user: response.data.user }));
   toast.success('Signup successful!');
-  setTimeout(() => navigate("/Profile"), 2000);
-} else {
-  toast.error('Signup failed!');
+ 
+  setTimeout(()=>{
+   navigate("/Profile")
+  },2000)
+} else if(response.data.message=='exist') {
+  toast.error('Datas already exist!');
 }
 } catch (error) {
   console.log('it is response error',error)

@@ -18,7 +18,7 @@ function Login() {
         password: ''
     });
 
-  console.log('formData',formData)
+
   const handleChange = (e) => {
     const {name,value}=e.target;
     setFormData(prev => ({
@@ -34,9 +34,9 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Logging in with:', formData);
+
     const {email,password}=formData
-    console.log('email,password:', email,password);
+
 
   if (!email.trim()) {
   toast.error('Email is required');
@@ -58,11 +58,12 @@ if (password.length < 8) {
 }
 
 const response=await axios.post('http://localhost:4000/admin/Login',formData)
-console.log('response',response)
+
+
 if (response.data.message === 'success') {
   console.log('resp',response.data)
   localStorage.setItem("jwtUser", response.data.token)
-  console.log('response.data',response.data)
+  console.log('response.data',response.data.token)
   dispatch(login({token:response.data.token,user:response.data.user}))
   console.log('admin login response success');
   toast.success("Login successful!");
@@ -83,7 +84,7 @@ if (response.data.message === 'success') {
     
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <form onSubmit={handleSubmit} className="bg-gray-500 p-8 rounded-xl shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
         
         <div className="mb-4">
           <label className="block text-gray-700 mb-1" htmlFor="email">Email</label>

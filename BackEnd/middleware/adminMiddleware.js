@@ -7,19 +7,19 @@ const adminMiddleware = async (req, res, next) => {
 
     if (!token) {
       console.log("Authorization is not found!!");
-      res.status(401).json({ message: 'Authorization is not found!!' });
+      res.status(403).json({ message: 'Authorization is not found!!' });
       return;
     }
 
-    if (!process.env.JSON_WEB_TOKEN) {
+    if (!process.env.ADMIN_ACCESS_TOKEN_SECRET) {
       throw new Error("ACCESS_TOKEN_SECRET is not defined in the environment variables.");
     }
-
-    const decode = jwt.verify(token, process.env.JSON_WEB_TOKEN);
+    const tokens = token.split(" ")[1]; 
+    const decode = jwt.verify(tokens, process.env.ADMIN_ACCESS_TOKEN_SECRET);
 
     if (!decode) {
       console.log('Unauthorized access denied!!');
-      res.status(401).json({ message: 'Unauthorized access denied!!' });
+      res.status(403).json({ message: 'Unauthorized access denied!!' });
       return;
     }
 
@@ -28,8 +28,8 @@ const adminMiddleware = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(error);
-    res.status(401).json({ message: 'Internal server error!!' });
+    console.log('it is middleware catch error',error);
+    res.status(403).json({ message: 'Internal server error!!' });
     return;
   }
 };
