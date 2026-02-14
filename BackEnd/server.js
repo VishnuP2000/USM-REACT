@@ -33,9 +33,9 @@ mongoose.connect(process.env.MONGODB_CONNECTION)
 
 app.use('/',userRoute)
 app.use('/admin',adminRoute)
-const PORT=4000;
+const PORT=process.env.PORT || 4000;
 console.log('it is server.js pagewerwqerqwerqwer') 
 
 app.listen(PORT,()=>{
-console.log(`server is runing`)
+console.log(`server is runing${PORT}`)
 })

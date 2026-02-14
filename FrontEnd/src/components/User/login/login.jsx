@@ -62,14 +62,7 @@ function Login() {
         toast.success("email is success");
         console.log('it is response',response.data.message)
      
-        //    localStorage.setItem(
-        //   "accessToken",
-        //   JSON.stringify({
-        //     //it is convert json string in to obect
-        //     token: response.data.accessToken,
-        //     user: response.data.userData,
-        //   })
-        // );
+    
         localStorage.setItem("accessToken",response.data.accessToken);
         console.log("response.data.accessToken",response.data.accessToken)
 console.log('store the datas into the local storage from login')
@@ -99,8 +92,7 @@ console.log('pass datas into the redux from login')
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <form
           onSubmit={handleSubmit}
-          className="bg-white p-8 rounded-xl shadow-md w-96"
-        >
+          className="bg-white p-8 rounded-xl shadow-md w-96"  >
           <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
           <div className="mb-4">

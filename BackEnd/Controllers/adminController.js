@@ -204,8 +204,8 @@ const searchUsers=async(req,res)=>{
  console.log('search',search)
  const searchUsers=await Users.find({
    $or: [
-        { name: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } }
+        { name: { $regex: `^${search}`, $options: "i" } },
+        { email: { $regex: `^${search}`, $options: "i" } }
       ]
  })
  console.log('get searchusers data',searchUsers)

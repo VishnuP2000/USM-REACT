@@ -25,7 +25,7 @@ const signUp = async (req, res) => {
       image
     );
 
-     const hashedPassword = await bcrypt.hash(password, 10);
+     const hashedPassword = await bcrypt.hash(password, 10);    //bcrypt is a library
 
      console.log('hasedPassword',hashedPassword)
 
@@ -82,13 +82,14 @@ const signIn = async (req, res) => {
     console.log("it is backend signIn");
     const { email, password } = req.body;
     console.log("email", email);
+    console.log("password", password);
 
     const userData = await Users.findOne({ email: email });
     console.log("userData", userData);
 
     if (userData) {
       console.log("it is matching");
-      if (userData.password == password) {
+      if (userData.confirmPassword == password) {
         console.log("password is matching");
    
 
