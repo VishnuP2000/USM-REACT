@@ -113,7 +113,7 @@ const handleSubmit = async (e) => {
     console.log('datas',datas)
     
 try {
-        const response=await axios.post('http://localhost:4000/signUp',datas)
+        const response=await axios.post('https://usm-react.onrender.com/signUp',datas)
     console.log('response',response)
 
  if (response.data.message == 'success') {
