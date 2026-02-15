@@ -130,9 +130,7 @@ function Profile() {
 
     try {
 
-      const response = await api.post(
-        "/editData",
-        formData,
+      const response = await api.post("https://usm-react.onrender.com/editData",formData,
        
       );
 
