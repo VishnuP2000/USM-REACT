@@ -12,7 +12,7 @@ console.log('it is server.js page')
 const app=express()
 
 app.use(Cors({
-  origin: "http://localhost:5173", // Your frontend domain
+  origin: ["http://localhost:5173","https://usm-react-wbdo.vercel.app"], // Your frontend domain
   credentials: true // ✅ Important to allow cookies
 }));
 
