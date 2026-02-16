@@ -1,5 +1,5 @@
 import axios from "axios";
-console.log('welcome axiosInstence')
+console.log('welcome axiosInstenceeeeee')
 const api = axios.create({
   baseURL: `${import.meta.APIKEY}`,
   withCredentials: true, // ✅ Important for sending cookies (like refresh token)
