@@ -1,7 +1,7 @@
 import axios from "axios";
 console.log('welcome axiosInstence')
 const api = axios.create({
-  baseURL: "https://usm-react.onrender.com",
+  baseURL: `${import.meta.APIKEY}`,
   withCredentials: true, // ✅ Important for sending cookies (like refresh token)
 });
 console.log('it is axiosIntercepter ')
