@@ -182,7 +182,7 @@ console.log('addUserData',addUserData)
       if (!value.trim()) return;
       console.log('it is value',value)
       try {
-        const res = await axios.get(`http://localhost:4000/admin/searchUsers?search=${value}`);
+        const res = await axios.get(`https://usm-react.onrender.com/admin/searchUsers?search=${value}`);
       if(res.data.message=='success'){
           console.log('res.data.user',res.data.user)
           setsearchUsers(res.data.user);
