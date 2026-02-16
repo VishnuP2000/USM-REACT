@@ -1,7 +1,7 @@
 import axios from "axios";
 console.log('welcome axiosInstenceeeeee')
 const api = axios.create({
-  baseURL: `${import.meta.APIKEY}`,
+  baseURL: import.meta.env.VITE_BASE_URL,
   withCredentials: true, // ✅ Important for sending cookies (like refresh token)
 });
 console.log('it is axiosIntercepter ')
@@ -9,6 +9,7 @@ api.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    console.log("import.meta.env.VITE_BASE_URL",import.meta.env.VITE_BASE_URL)
     console.log('it is request+++ of axiosInstants',token)
   }
   return config;
