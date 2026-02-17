@@ -54,8 +54,9 @@ function Login() {
     };
 
     console.log('pasing data of login')
+    console.log('import.meta.env.VITE_BASE_URL login page',import.meta.env.VITE_BASE_URL)
     try {
-      const response = await axios.post( `${import.meta.APIKEY}/signIn`, signInData,{
+      const response = await axios.post( `${import.meta.env.VITE_BASE_URL}/signIn`, signInData,{
       });
       console.log('it is response of login')
       if (response.data.message == "success") {
