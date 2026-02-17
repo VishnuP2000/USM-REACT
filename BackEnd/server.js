@@ -12,7 +12,7 @@ console.log('it is server.js page')
 const app=express()
 
 app.use(Cors({
-  origin: "https://usm-react-wbdo.vercel.app/", // Your frontend domain
+  origin: "https://usm-react-wbdo.vercel.app", // Your frontend domain
   credentials: true // ✅ Important to allow cookies
 }));
 
