@@ -108,7 +108,7 @@ const refreshToken = jwt.sign(
   res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true, // use in production
-      sameSite: "strict",
+      sameSite: "None",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
